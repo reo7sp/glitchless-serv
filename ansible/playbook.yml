@@ -1,18 +1,23 @@
 ---
-- hosts: all
+- hosts: localhost
   remote_user: root
 
   tasks:
+  - name: Create docker network for web
+    docker_network:
+      name: web
+
   - name: Build nginx image
     docker_image:
       name: glitchless/nginx
-      dockerfile: ./nginx/Dockerfile
+      path: ./nginx
 
   - name: Run nginx
     docker_container:
       name: nginx
       image: glitchless/nginx
-      restart: always
+      restart_policy: always
+      published_ports: 80:80
       networks:
       - name: web
 
@@ -20,7 +25,7 @@
     docker_container:
       name: registry
       image: registry:2
-      restart: always
+      restart_policy: always
       networks:
       - name: web
 
