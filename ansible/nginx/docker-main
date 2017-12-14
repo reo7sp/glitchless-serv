@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-(sleep 5; certbot --nginx --noninteractive --agree-tos --email glitchless-letsencrypt@oleg.rocks --domain glitchless.ru) &
+[ -d "/etc/letsencrypt/live" ] || \
+    (sleep 5; certbot --nginx --noninteractive --agree-tos --email glitchless-letsencrypt@oleg.rocks --domains glitchless.ru,registry.glitchless.ru) &
 
 nginx -g "daemon off;"

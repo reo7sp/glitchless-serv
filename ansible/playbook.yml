@@ -3,52 +3,88 @@
   remote_user: root
 
   tasks:
-  - name: Create docker network for web
-    docker_network:
-      name: web
+    - name: Create web network
+      docker_network:
+        name: web
 
-  - name: Build nginx image
-    docker_image:
-      name: glitchless/nginx
-      path: ./nginx
+    - name: Create web volumes
+      docker_volume:
+        name: web_letsencrypt
 
-  - name: Run nginx
-    docker_container:
-      name: nginx
-      image: glitchless/nginx
-      restart_policy: always
-      published_ports: 
-      - 80:80
-      - 443:443
-      networks:
-      - name: web
+    - name: Build nginx image
+      docker_image:
+        name: glitchless/nginx
+        path: ./nginx
 
-  - name: Run docker registry
-    docker_container:
-      name: registry
-      image: registry:2
-      restart_policy: always
-      networks:
-      - name: web
+    - name: Run nginx
+      docker_container:
+        name: nginx
+        image: glitchless/nginx
+        restart_policy: always
+        published_ports: 
+          - 80:80
+          - 443:443
+        volumes:
+          - web_letsencrypt:/etc/letsencrypt
+        networks:
+          - name: web
 
-  # - name: Log into private docker registry
-  #   docker_login:
-  #     registry: registry.glitchless.ru
+    - name: Run docker registry
+      docker_container:
+        name: registry
+        image: registry:2
+        restart_policy: always
+        networks:
+          - name: web
 
-  # - name: Run Rhythm Blast backend
-  #   docker_container:
-  #     name: rhythm_blast_backend
-  #     image: rhythm_blast/backend
-  #     pull: true
-  #     restart: always
-  #     networks:
-  #     - name: web
+    - name: Log into private docker registry
+      docker_login:
+        registry: registry.glitchless.ru
 
-  # - name: Pull Rhythm Blast frontend
-  #   docker_container:
-  #     name: rhythm_blast_frontend
-  #     image: rhythm_blast/frontend
-  #     pull: true
-  #     restart: always
-  #     networks:
-  #     - name: web
+    - name: Run Rhythm Blast frontend
+      docker_container:
+        name: rhythm_blast_frontend
+        image: rhythm_blast/frontend
+        pull: true
+        restart: always
+        networks:
+          - name: web
+
+    - name: Create Rhythm Blast backend network
+      docker_network:
+        name: rhythm_blast_backend
+
+    - name: Run Rhythm Blast backend db
+      docker_container:
+        name: rhythm_blast_backend_postgres
+        image: postgres
+        restart: always
+        networks:
+          - name: rhythm_blast_backend
+            aliases:
+              - db
+        environment:
+          - POSTGRES_USER=backend
+          - POSTGRES_PASSWORD=qwerty
+          - POSTGRES_DB=glitchlessdb
+
+    - name: Create Rhythm Blast backend volumes
+      docker_volume:
+        name: rhythm_blast_maven_repo
+
+    - name: Run Rhythm Blast backend
+      docker_container:
+        name: rhythm_blast_backend
+        image: rhythm_blast/backend
+        pull: true
+        restart: always
+        networks:
+          - name: web
+          - name: rhythm_blast_backend
+        env:
+          - PORT=80
+          - DATABASE_USER=backend
+          - DATABASE_PASSWORD=qwerty
+          - DATABASE_URL=jdbc:postgresql://db/glitchlessdb
+        volumes:
+        - rhythm_blast_maven_repo:/root/.m2
