@@ -1,0 +1,47 @@
+---
+- hosts: all
+  remote_user: root
+
+  tasks:
+  - name: Build nginx image
+    docker_image:
+      name: glitchless/nginx
+      dockerfile: ./nginx/Dockerfile
+
+  - name: Run nginx
+    docker_container:
+      name: nginx
+      image: glitchless/nginx
+      restart: always
+      networks:
+      - name: web
+
+  - name: Run docker registry
+    docker_container:
+      name: registry
+      image: registry:2
+      restart: always
+      networks:
+      - name: web
+
+  # - name: Log into private docker registry
+  #   docker_login:
+  #     registry: registry.glitchless.ru
+
+  # - name: Run Rhythm Blast backend
+  #   docker_container:
+  #     name: rhythm_blast_backend
+  #     image: rhythm_blast/backend
+  #     pull: true
+  #     restart: always
+  #     networks:
+  #     - name: web
+
+  # - name: Pull Rhythm Blast frontend
+  #   docker_container:
+  #     name: rhythm_blast_frontend
+  #     image: rhythm_blast/frontend
+  #     pull: true
+  #     restart: always
+  #     networks:
+  #     - name: web
