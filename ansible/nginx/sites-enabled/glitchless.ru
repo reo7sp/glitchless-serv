@@ -5,7 +5,7 @@ server {
 		proxy_pass http://rhythm_blast_frontend;
 	}
 
-	location /api {
+	location ^~ /api {
 		proxy_pass http://rhythm_blast_backend;
 	}
 }
