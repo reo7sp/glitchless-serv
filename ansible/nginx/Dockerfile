@@ -13,4 +13,4 @@ COPY docker-main /docker-main
 VOLUME /etc/letsencrypt
 
 EXPOSE 80
-CMD ['sh', '/docker-main']
+CMD ["sh", "/docker-main"]
