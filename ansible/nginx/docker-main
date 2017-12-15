@@ -1,13 +1,10 @@
 #!/bin/bash
 
-if [ ! -d "/etc/letsencrypt/live" ]
-then
-    (
-        sleep 5; 
-        certbot --nginx --noninteractive --agree-tos --email glitchless-letsencrypt@oleg.rocks --domains glitchless.ru,registry.glitchless.ru;
-        sed -i "s/listen 443 ssl;/listen 443 ssl http2;/" /etc/nginx/sites-enabled/*;
-    ) &
-fi
+(
+    sleep 5; 
+    certbot --nginx --noninteractive --agree-tos --email glitchless-letsencrypt@oleg.rocks --domains glitchless.ru,registry.glitchless.ru;
+    sed -i "s/listen 443 ssl;/listen 443 ssl http2;/" /etc/nginx/sites-enabled/*;
+) &
     
 
 nginx -g "daemon off;"
