@@ -2,10 +2,10 @@ server {
 	server_name glitchless.ru;
 
 	location / {
-		proxy_pass http://172.1.1.2;
+		proxy_pass http://10.5.0.6;
 	}
 
 	location ^~ /api {
-		proxy_pass http://172.1.1.3;
+		proxy_pass http://10.5.0.7;
 	}
 }
