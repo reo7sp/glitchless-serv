@@ -33,6 +33,10 @@
         networks:
           - name: web
 
+    - name: Wait until nginx get https
+      - pause:
+        seconds: 15
+
     - name: Run docker registry
       docker_container:
         name: registry
