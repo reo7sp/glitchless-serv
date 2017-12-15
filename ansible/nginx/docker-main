@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ ! -d "/etc/letsencrypt/live" ]]
+if [ ! -d "/etc/letsencrypt/live" ]
 then
     (
         sleep 5; 
