@@ -51,7 +51,7 @@
     - name: Run Rhythm Blast frontend
       docker_container:
         name: rhythm_blast_frontend
-        image: rhythm_blast/frontend
+        image: registry.glitchless.ru/rhythm_blast/frontend:latest
         pull: true
         restart_policy: always
         networks:
@@ -83,7 +83,7 @@
     - name: Run Rhythm Blast backend
       docker_container:
         name: rhythm_blast_backend
-        image: rhythm_blast/backend
+        image: registry.glitchless.ru/rhythm_blast/backend:latest
         pull: true
         restart_policy: always
         networks:
