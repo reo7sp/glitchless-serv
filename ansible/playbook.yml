@@ -7,6 +7,28 @@
       docker_network:
         name: web
 
+    - name: Create nginx volumes
+      docker_volume:
+        name: web_letsencrypt
+
+    - name: Build nginx image
+      docker_image:
+        name: glitchless/nginx
+        path: ./nginx
+
+    - name: Run nginx
+      docker_container:
+        name: nginx
+        image: glitchless/nginx
+        restart_policy: always
+        published_ports:
+          - 80:80
+          - 443:443
+        volumes:
+          - web_letsencrypt:/etc/letsencrypt
+        networks:
+          - name: web
+
     - name: Run docker registry
       docker_container:
         name: registry
@@ -14,6 +36,7 @@
         restart_policy: always
         networks:
           - name: web
+            ipv4_address: 172.1.1.100
         published_ports:
           - 5000:5000
 
@@ -31,6 +54,7 @@
         restart_policy: always
         networks:
           - name: web
+            ipv4_address: 172.1.1.101
 
     - name: Create Rhythm Blast backend network
       docker_network:
@@ -62,6 +86,7 @@
         restart_policy: always
         networks:
           - name: web
+            ipv4_address: 172.1.1.102
           - name: rhythm_blast_backend
         env:
           PORT: 80
@@ -71,24 +96,3 @@
         volumes:
         - rhythm_blast_maven_repo:/root/.m2
 
-    - name: Create nginx volumes
-      docker_volume:
-        name: web_letsencrypt
-
-    - name: Build nginx image
-      docker_image:
-        name: glitchless/nginx
-        path: ./nginx
-
-    - name: Run nginx
-      docker_container:
-        name: nginx
-        image: glitchless/nginx
-        restart_policy: always
-        published_ports:
-          - 80:80
-          - 443:443
-        volumes:
-          - web_letsencrypt:/etc/letsencrypt
-        networks:
-          - name: web
