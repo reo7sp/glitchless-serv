@@ -44,9 +44,9 @@
 
     - name: Log into private docker registry
       docker_login:
-        registry: localhost:5000
-        username: a
-        password: a
+        registry: https://registry.glitchless.ru
+        username: null
+        password: null
 
     - name: Run Rhythm Blast frontend
       docker_container:
