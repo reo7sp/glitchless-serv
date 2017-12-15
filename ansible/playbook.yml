@@ -7,7 +7,7 @@
       docker_network:
         name: web
         driver: bridge
-        driver_options:
+        ipam_options:
           subnet: 10.5.0.0/16
           gateway: 10.5.0.1
 
