@@ -66,6 +66,10 @@
       docker_network:
         name: rhythm_blast_backend
 
+    - name: Create Rhythm Blast db volume
+      docker_volume:
+        name: rhythm_blast_backend_postgres_data
+
     - name: Run Rhythm Blast backend db
       docker_container:
         name: rhythm_blast_backend_postgres
@@ -75,6 +79,8 @@
           - name: rhythm_blast_backend
             aliases:
               - db
+        volumes:
+          - rhythm_blast_backend_postgres_data:/var/lib/postgresql/data
         env:
           POSTGRES_USER: backend
           POSTGRES_PASSWORD: qwerty
