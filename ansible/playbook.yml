@@ -108,3 +108,5 @@
         volumes:
         - rhythm_blast_maven_repo:/root/.m2
 
+    - name: Clean old docker images
+      command: docker-clean images
